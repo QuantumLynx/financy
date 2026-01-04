@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk, Orbitron } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
@@ -18,6 +18,12 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["400", "500", "600", "700"]
 });
 
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  variable: "--font-orbitron",
+  weight: ["400", "500", "600", "700", "800", "900"]
+});
+
 export const metadata: Metadata = {
   title: "Financy - Financial Dashboard",
   description: "Advanced financial analysis dashboard",
@@ -30,13 +36,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${jetbrainsMono.variable} ${spaceGrotesk.variable} font-mono antialiased`}>
+      <body className={`${jetbrainsMono.variable} ${spaceGrotesk.variable} ${orbitron.variable} font-mono antialiased`}>
         <ToastProvider>
           <div className="flex min-h-screen bg-slate-950 relative z-10">
             <Sidebar />
             <div className="flex-1 flex flex-col">
               <Header />
-              <main className="flex-1 p-6 overflow-y-auto">
+              <main className="flex-1 p-2.5 overflow-y-auto">
                 {children}
               </main>
             </div>

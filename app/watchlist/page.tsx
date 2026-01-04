@@ -1,15 +1,14 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { MOCK_STOCKS, MOCK_INDEXES, AssetType } from '@/lib/mockData';
+import { MOCK_STOCKS, AssetType } from '@/lib/mockData';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { MarketIndexesSection } from '@/components/watchlist/MarketIndexesSection';
 import { AssetTypeBadge } from '@/components/watchlist/AssetTypeBadge';
 import { FilterDropdown } from '@/components/watchlist/FilterDropdown';
 import { SortDropdown, SortField, SortOrder } from '@/components/watchlist/SortDropdown';
 import { SearchBar } from '@/components/watchlist/SearchBar';
-import { X } from 'lucide-react';
+import { X, TrendingUp, TrendingDown } from 'lucide-react';
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
 import { useToast } from '@/lib/hooks/useToast';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -42,6 +41,19 @@ export default function WatchlistPage() {
 
   // Get all available assets
   const allAssets = Object.values(MOCK_STOCKS);
+
+  // Calculate top gainers and losers
+  const topGainers = useMemo(() => {
+    return [...allAssets]
+      .sort((a, b) => b.changePercent - a.changePercent)
+      .slice(0, 5);
+  }, [allAssets]);
+
+  const topLosers = useMemo(() => {
+    return [...allAssets]
+      .sort((a, b) => a.changePercent - b.changePercent)
+      .slice(0, 5);
+  }, [allAssets]);
 
   // Filter watchlist assets
   const watchlistAssets = useMemo(() => {
@@ -156,8 +168,90 @@ export default function WatchlistPage() {
         <p className="text-slate-400 text-sm">Your personalized stock watchlist.</p>
       </div>
 
-      {/* Market Indexes Section */}
-      <MarketIndexesSection indexes={MOCK_INDEXES} />
+      {/* Top Gainers & Losers Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Top Gainers */}
+        <div className="bg-card-dark rounded-xl border border-slate-800 overflow-hidden">
+          <div className="px-4 py-3 border-b border-slate-800 bg-bullish/5">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="text-bullish" size={18} />
+              <h2 className="text-base font-bold text-white" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+                TOP GAINERS
+              </h2>
+            </div>
+          </div>
+          <div className="divide-y divide-slate-800/50">
+            {topGainers.map((stock) => (
+              <Link
+                key={stock.ticker}
+                href={`/stock/${stock.ticker}`}
+                className="flex items-center justify-between px-4 py-3 hover:bg-slate-800/30 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-bullish/20 to-bullish/5 border border-bullish/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-bullish font-bold text-xs font-mono">
+                      {stock.ticker.charAt(0)}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-white font-mono text-sm">{stock.ticker}</div>
+                    <div className="text-xs text-slate-400 truncate max-w-[150px]">{stock.name}</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-white text-sm tabular-nums">
+                    ${stock.price.toFixed(2)}
+                  </div>
+                  <div className="text-bullish font-semibold text-xs tabular-nums">
+                    +{stock.changePercent.toFixed(2)}%
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Top Losers */}
+        <div className="bg-card-dark rounded-xl border border-slate-800 overflow-hidden">
+          <div className="px-4 py-3 border-b border-slate-800 bg-bearish/5">
+            <div className="flex items-center gap-2">
+              <TrendingDown className="text-bearish" size={18} />
+              <h2 className="text-base font-bold text-white" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+                TOP LOSERS
+              </h2>
+            </div>
+          </div>
+          <div className="divide-y divide-slate-800/50">
+            {topLosers.map((stock) => (
+              <Link
+                key={stock.ticker}
+                href={`/stock/${stock.ticker}`}
+                className="flex items-center justify-between px-4 py-3 hover:bg-slate-800/30 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-bearish/20 to-bearish/5 border border-bearish/20 flex items-center justify-center flex-shrink-0">
+                    <span className="text-bearish font-bold text-xs font-mono">
+                      {stock.ticker.charAt(0)}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-white font-mono text-sm">{stock.ticker}</div>
+                    <div className="text-xs text-slate-400 truncate max-w-[150px]">{stock.name}</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-white text-sm tabular-nums">
+                    ${stock.price.toFixed(2)}
+                  </div>
+                  <div className="text-bearish font-semibold text-xs tabular-nums">
+                    {stock.changePercent.toFixed(2)}%
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Toolbar */}
       <div className="flex items-center gap-3 flex-wrap">

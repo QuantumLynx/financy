@@ -2,7 +2,8 @@ export enum AssetType {
   STOCK = 'Stock',
   ETF = 'ETF',
   CRYPTO = 'Crypto',
-  INDEX = 'Index'
+  INDEX = 'Index',
+  COMMODITY = 'Commodity'
 }
 
 export interface MarketIndex {
@@ -12,7 +13,7 @@ export interface MarketIndex {
   value: number;
   change: number;
   changePercent: number;
-  assetType: AssetType.INDEX | AssetType.CRYPTO;
+  assetType: AssetType.INDEX | AssetType.CRYPTO | AssetType.COMMODITY;
   updatedAt: Date;
 }
 
@@ -308,13 +309,43 @@ export const MOCK_INDEXES: MarketIndex[] = [
         updatedAt: new Date()
     },
     {
+        id: 'DJI',
+        name: 'Dow Jones',
+        symbol: 'DJI',
+        value: 37545.33,
+        change: 156.82,
+        changePercent: 0.42,
+        assetType: AssetType.INDEX,
+        updatedAt: new Date()
+    },
+    {
         id: 'RUT',
         name: 'Russell 2000',
-        symbol: 'RUT',
+        symbol: 'IWM',
         value: 2063.24,
         change: 12.45,
         changePercent: 0.61,
         assetType: AssetType.INDEX,
+        updatedAt: new Date()
+    },
+    {
+        id: 'GOLD',
+        name: 'Gold',
+        symbol: 'GC=F',
+        value: 2063.40,
+        change: 15.80,
+        changePercent: 0.77,
+        assetType: AssetType.COMMODITY,
+        updatedAt: new Date()
+    },
+    {
+        id: 'SILVER',
+        name: 'Silver',
+        symbol: 'SI=F',
+        value: 24.12,
+        change: -0.18,
+        changePercent: -0.74,
+        assetType: AssetType.COMMODITY,
         updatedAt: new Date()
     },
     {
